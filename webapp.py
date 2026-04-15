@@ -486,6 +486,22 @@ def extract_text_from_pdf(uploaded_file, max_pages=5):
         return None
 
 
+RESUME_KEYWORDS = {
+    "experience", "education", "skills", "summary", "objective", "work",
+    "employment", "projects", "certifications", "achievements", "profile",
+    "references", "languages", "internship", "volunteer", "university",
+    "college", "degree", "bachelor", "master", "gpa", "resume", "cv",
+}
+
+def is_resume_pdf(text):
+    """Return True if the extracted text looks like a resume."""
+    if not text:
+        return False
+    lower = text.lower()
+    hits = sum(1 for kw in RESUME_KEYWORDS if kw in lower)
+    return hits >= 3
+
+
 def get_match(JD_txt, resume_txt):
     if not JD_txt or not resume_txt:
         return None
@@ -1019,6 +1035,9 @@ if st.session_state.user_role == "recruiter":
                         progress.progress((idx + 1) / len(uploaded_resumes))
                         res_text = extract_text_from_pdf(res_file)
                         name = res_file.name
+                        if res_text and not is_resume_pdf(res_text):
+                            st.warning(f"⚠️ **{name}** doesn't look like a resume. Please upload a valid resume PDF.")
+                            continue
                         match_pct = get_match(jd_text, res_text) if res_text else None
                         label, _ = match_label(match_pct)
                         ats = ats_compatibility_label(match_pct)
@@ -1110,15 +1129,20 @@ else:
             "- We also show an **ATS label** (Excellent / Good / Fair / Poor) as a simple interpretation."
         )
     uploaded_jd = st.file_uploader("Job description (PDF)", type="pdf", key="jd_js")
-    uploaded_resume = st.file_uploader("Your resume (PDF)", type="pdf", key="res_js")
+    uploaded_resume = st.file_uploader("Your resume (PDF — single file only)", type="pdf", key="res_js")
     click = st.button("Process")
 
     job_description = extract_text_from_pdf(uploaded_jd) if uploaded_jd else None
     resume = extract_text_from_pdf(uploaded_resume) if uploaded_resume else None
 
+    # Validate resume file
+    if uploaded_resume and resume is not None and not is_resume_pdf(resume):
+        st.warning("⚠️ The file you uploaded doesn't look like a resume. Please upload a valid resume PDF.")
+        resume = None
+
     if click:
         if not job_description or not resume:
-            st.warning("Upload both job description and resume.")
+            st.warning("Upload both job description and a valid resume.")
         else:
             st.session_state.js_last_jd = job_description
             st.session_state.js_last_resume = resume
