@@ -858,7 +858,7 @@ if not st.session_state.logged_in:
             )
         st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("## Hire smarter. Apply smarter.")
+    st.markdown("## HIRE SMARTER. APPLY FASTER.")
     st.markdown(
         """A modern resume screening app with:
 - **ATS-style match scoring**
