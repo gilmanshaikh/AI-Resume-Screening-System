@@ -16,7 +16,7 @@ def _rerun():
 
 # Page config - must be first Streamlit command
 st.set_page_config(
-    page_title="Resume Screening | Gilman",
+    page_title="Resume Screening (Devops Version) | Gilman Shaikh",
     page_icon="📋",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -1207,3 +1207,4 @@ else:
                 st.info("No course suggestions needed — your resume already covers the JD keywords well.")
 
 st.markdown("<p class='footer'>MADE BY <strong>GILMAN</strong></p>", unsafe_allow_html=True)
+print("CI/CD Local Test Baseline") 
