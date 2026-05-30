@@ -1087,37 +1087,37 @@ if not st.session_state.logged_in:
             password = st.text_input("Password", type="password", placeholder="Enter your password")
             role = st.selectbox("Access role", ["Recruiter", "Job Seeker"], index=0)
             submitted = st.form_submit_button("🚀 Sign in", use_container_width=True)
-    
-    if submitted:
-        if not username or not password:
-            st.error("Please enter both username and password.")
-        else:
-            un = username.strip().lower()
-            pw = password
-            ok = False
-            if un == "admin" and pw == DEMO_CREDENTIALS.get("admin"):
-                st.session_state.logged_in = True
-                st.session_state.user_role = "admin"
-                st.session_state.username = username
-                log_activity("Admin", username, "Login", "Admin panel access")
-                ok = True
-            elif role == "Recruiter" and un == "recruiter" and pw == DEMO_CREDENTIALS.get("recruiter"):
-                st.session_state.logged_in = True
-                st.session_state.user_role = "recruiter"
-                st.session_state.username = username
-                log_activity("Recruiter", username, "Login", "")
-                ok = True
-            elif role == "Job Seeker" and un == "jobseeker" and pw == DEMO_CREDENTIALS.get("jobseeker"):
-                st.session_state.logged_in = True
-                st.session_state.user_role = "job_seeker"
-                st.session_state.username = username
-                log_activity("Job Seeker", username, "Login", "")
-                ok = True
-            if ok:
-                _rerun()
+
+        if submitted:
+            if not username or not password:
+                st.error("Please enter both username and password.")
             else:
-                st.error("Invalid username or password for the selected role.")
-    
+                un = username.strip().lower()
+                pw = password
+                ok = False
+                if un == "admin" and pw == DEMO_CREDENTIALS.get("admin"):
+                    st.session_state.logged_in = True
+                    st.session_state.user_role = "admin"
+                    st.session_state.username = username
+                    log_activity("Admin", username, "Login", "Admin panel access")
+                    ok = True
+                elif role == "Recruiter" and un == "recruiter" and pw == DEMO_CREDENTIALS.get("recruiter"):
+                    st.session_state.logged_in = True
+                    st.session_state.user_role = "recruiter"
+                    st.session_state.username = username
+                    log_activity("Recruiter", username, "Login", "")
+                    ok = True
+                elif role == "Job Seeker" and un == "jobseeker" and pw == DEMO_CREDENTIALS.get("jobseeker"):
+                    st.session_state.logged_in = True
+                    st.session_state.user_role = "job_seeker"
+                    st.session_state.username = username
+                    log_activity("Job Seeker", username, "Login", "")
+                    ok = True
+                if ok:
+                    _rerun()
+                else:
+                    st.error("Invalid username or password for the selected role.")
+
         with st.expander("Demo credentials"):
             st.code(
                 "admin / admin123\nrecruiter / recruiter123\njobseeker / jobseeker123"

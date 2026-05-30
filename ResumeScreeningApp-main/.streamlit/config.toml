@@ -1,6 +1,7 @@
 [server]
 port = 8501
-headless = true
+address = "localhost"
+headless = false
 
 [theme]
 base = "dark"
@@ -12,3 +13,5 @@ font = "sans serif"
 
 [browser]
 gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 8501
