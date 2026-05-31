@@ -1,16 +1,35 @@
-# DevOps AI Resume Screening — local launcher
-$ErrorActionPreference = "Stop"
-Set-Location $PSScriptRoot
+name: CI-CD Pipeline
 
-if (-not (Test-Path ".\.venv\Scripts\streamlit.exe")) {
-    Write-Host "Creating virtual environment..."
-    python -m venv .venv
-    .\.venv\Scripts\pip.exe install -r requirements.txt
-}
+on:
+  push:
+    branches:
+      - main
 
-Write-Host ""
-Write-Host "Starting app at http://localhost:8501"
-Write-Host "Press Ctrl+C to stop."
-Write-Host ""
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-.\.venv\Scripts\streamlit.exe run webapp.py --server.address localhost --server.port 8501
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t myapp .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd app
+            git pull
+            docker stop myapp || true
+            docker rm myapp || true
+            docker build -t myapp .
+            docker run -d -p 8501:8501 --name myapp myapp
