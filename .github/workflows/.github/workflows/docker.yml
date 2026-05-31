@@ -1,4 +1,4 @@
-name: Docker CI
+name: CI-CD Pipeline
 
 on:
   push:
@@ -6,12 +6,31 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t myapp .
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/AI-Resume-Screening-System
+
+            git pull origin main
+
+            source env/bin/activate
+
+            pip install -r requirements.txt
+
+            pkill -f "streamlit run webapp.py" || true
+
+            nohup streamlit run webapp.py \
+              --server.address 0.0.0.0 \
+              --server.port 8501 \
+              > streamlit.log 2>&1 &
