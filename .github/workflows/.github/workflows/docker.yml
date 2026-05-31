@@ -22,15 +22,22 @@ jobs:
           script: |
             cd /home/ubuntu/AI-Resume-Screening-System
 
-            git pull origin main
+            # 1. Clear any local file conflicts and sync with GitHub
+            git fetch --all
+            git reset --hard origin/main
 
+            # 2. Activate environment and update packages
             source env/bin/activate
-
             pip install -r requirements.txt
 
-            pkill -f "streamlit run webapp.py" || true
+            # 3. Aggressively free up port 8501 by killing whatever process holds it
+            echo "Nuking old processes on port 8501..."
+            sudo fuser -k 8501/tcp || true
+            pkill -9 -f "streamlit" || true
+            
+            # 4. Small delay to let the operating system release the port completely
+            sleep 2
 
-            nohup streamlit run webapp.py \
-              --server.address 0.0.0.0 \
-              --server.port 8501 \
-              > streamlit.log 2>&1 &
+            # 5. Launch the app on a single line with explicit IP routing configuration
+            echo "Launching App Version 2..."
+            nohup streamlit run webapp.py --browser.serverAddress 51.21.194.210 --server.address 0.0.0.0 --server.port 8501 > streamlit.log 2>&1 &
