@@ -55,7 +55,7 @@ st.set_page_config(
 )
 
 APP_NAME = "🤖 DevOpsAI Resume Screening System v2"
-APP_TAGLINE = "⚙️ CI/CD-powered AI resume screening & talent matching"
+APP_TAGLINE = "⚙️ CI/CD-powered AI resume screening & candidate matching"
 
 # ----- Custom CSS: futuristic professional design system -----
 st.markdown("""
