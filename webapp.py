@@ -54,7 +54,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-APP_NAME = "🤖 DevOps AI Resume Screening"
+APP_NAME = "🤖 DevOpsAI Resume Screening System v2"
 APP_TAGLINE = "⚙️ CI/CD-powered AI resume screening & talent matching"
 
 # ----- Custom CSS: futuristic professional design system -----
