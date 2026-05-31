@@ -20,27 +20,26 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/AI-Resume-Screening-System
+            # 1. Navigate to the correct folder name found on your server
+            cd /home/ubuntu/AI-Resume-Screening
 
-            # 1. Force pull clean code from GitHub
+            # 2. Force pull clean code from GitHub
             git fetch --all
             git reset --hard origin/main
 
-            # 2. Activate virtual environment and update packages
+            # 3. Activate virtual environment and update packages
             source env/bin/activate
             pip install -r requirements.txt
 
-            # 3. Kill any existing Streamlit apps safely
+            # 4. Kill any existing Streamlit apps safely
             echo "Stopping older version..."
             pkill -9 -f "streamlit run" || true
             
-            # 4. Short buffer to let the OS release port 8501
+            # 5. Short buffer to let the OS release port 8501
             sleep 2
 
-            # 5. The Bulletproof Launch (Forces background persistence)
+            # 6. Launch the app using the direct path binary for background persistence
             echo "Launching App Version 2.0..."
             nohup env/bin/streamlit run webapp.py --browser.serverAddress 51.21.194.210 --server.address 0.0.0.0 --server.port 8501 > streamlit.log 2>&1 < /dev/null &
             
-            # 6. Verify it actually stayed alive for a second before dropping connection
             sleep 2
-            ps aux | grep webapp.py
