@@ -20,26 +20,19 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 1. Navigate to the correct folder name found on your server
+            # 1. Move into your actual server folder
             cd /home/ubuntu/AI-Resume-Screening
 
-            # 2. Force pull clean code from GitHub
+            # 2. Clean out any locks and pull your absolute newest GitHub changes
             git fetch --all
             git reset --hard origin/main
 
-            # 3. Activate virtual environment and update packages
+            # 3. Install any new dependencies you might have added locally
             source env/bin/activate
             pip install -r requirements.txt
 
-            # 4. Kill any existing Streamlit apps safely
-            echo "Stopping older version..."
+            # 4. Kill the old background version instantly
             pkill -9 -f "streamlit run" || true
             
-            # 5. Short buffer to let the OS release port 8501
-            sleep 2
-
-            # 6. Launch the app using the direct path binary for background persistence
-            echo "Launching App Version 2.0..."
-            nohup env/bin/streamlit run webapp.py --browser.serverAddress 51.21.194.210 --server.address 0.0.0.0 --server.port 8501 > streamlit.log 2>&1 < /dev/null &
-            
-            sleep 2
+            # 5. Launch the brand new updated code cleanly in the background
+            nohup env/bin/streamlit run webapp.py --server.port 8501 --server.address 0.0.0.0 --browser.serverAddress 51.21.194.210 > streamlit.log 2>&1 &
