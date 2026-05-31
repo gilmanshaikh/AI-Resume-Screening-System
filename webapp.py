@@ -48,7 +48,7 @@ def render_stat_cards(stats):
 
 # Page config - must be first Streamlit command
 st.set_page_config(
-    page_title="DevOps AI Resume Screening  | Gilman Shaikh",
+    page_title="AI Resume Screening System (DevOps Project)  | Gilman Shaikh",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded",
