@@ -22,7 +22,7 @@ jobs:
           script: |
             cd /home/ubuntu/AI-Resume-Screening-System
 
-            # 1. Clear any local file conflicts and sync with GitHub
+            # 1. Wipe local changes and force sync with GitHub
             git fetch --all
             git reset --hard origin/main
 
@@ -30,14 +30,13 @@ jobs:
             source env/bin/activate
             pip install -r requirements.txt
 
-            # 3. Aggressively free up port 8501 by killing whatever process holds it
-            echo "Nuking old processes on port 8501..."
-            sudo fuser -k 8501/tcp || true
-            pkill -9 -f "streamlit" || true
+            # 3. Force-kill old Streamlit instances without needing sudo permissions
+            echo "Clearing out old application processes..."
+            pkill -9 -u ubuntu -f "streamlit run" || true
             
-            # 4. Small delay to let the operating system release the port completely
-            sleep 2
+            # 4. Give the operating system a moment to drop the connection
+            sleep 3
 
-            # 5. Launch the app on a single line with explicit IP routing configuration
-            echo "Launching App Version 2..."
+            # 5. Start the new code on a clean, single line
+            echo "Launching DevOps AI Screening V2.0..."
             nohup streamlit run webapp.py --browser.serverAddress 51.21.194.210 --server.address 0.0.0.0 --server.port 8501 > streamlit.log 2>&1 &
