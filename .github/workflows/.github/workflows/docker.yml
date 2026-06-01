@@ -20,19 +20,26 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 1. Move into your actual server folder
+            
+            echo "🚀 Starting deployment..."
+
+            # Move to project directory
             cd /home/ubuntu/AI-Resume-Screening
 
-            # 2. Clean out any locks and pull your absolute newest GitHub changes
-            git fetch --all
+            # Ensure repo is clean and updated
+            git fetch origin main
             git reset --hard origin/main
 
-            # 3. Install any new dependencies you might have added locally
+            # Install dependencies (safe even if unchanged)
             source env/bin/activate
+            pip install --upgrade pip
             pip install -r requirements.txt
 
-            # 4. Kill the old background version instantly
-            pkill -9 -f "streamlit run" || true
-            
-            # 5. Launch the brand new updated code cleanly in the background
-            nohup env/bin/streamlit run webapp.py --server.port 8501 --server.address 0.0.0.0 --browser.serverAddress 51.21.194.210 > streamlit.log 2>&1 &
+            # Restart systemd service (IMPORTANT PART)
+            sudo systemctl daemon-reload
+            sudo systemctl restart streamlit
+
+            # Check status (for debugging logs)
+            sudo systemctl status streamlit --no-pager
+
+            echo "✅ Deployment completed successfully"
