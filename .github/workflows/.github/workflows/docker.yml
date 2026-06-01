@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 (FULL AUTO SYNC)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -23,23 +23,20 @@ jobs:
             
             echo "🚀 Starting deployment..."
 
-            # Move to project directory
+            # Go to project
             cd /home/ubuntu/AI-Resume-Screening
 
-            # Ensure repo is clean and updated
+            # FORCE SYNC (this removes ALL manual dependency)
             git fetch origin main
             git reset --hard origin/main
+            git clean -fd
 
-            # Install dependencies (safe even if unchanged)
+            # Install dependencies safely
             source env/bin/activate
-            pip install --upgrade pip
             pip install -r requirements.txt
 
-            # Restart systemd service (IMPORTANT PART)
+            # Restart systemd (ONLY runtime manager)
             sudo systemctl daemon-reload
             sudo systemctl restart streamlit
 
-            # Check status (for debugging logs)
-            sudo systemctl status streamlit --no-pager
-
-            echo "✅ Deployment completed successfully"
+            echo "✅ Deployment completed"
