@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy to EC2 (Fully Automatic)
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -23,24 +23,18 @@ jobs:
 
             set -e
 
-            echo "🚀 Deploying latest version..."
-
             cd /home/ubuntu/AI-Resume-Screening
 
-            # HARD SYNC (always exact GitHub state)
+            echo "🔄 Syncing latest code..."
             git fetch origin main
             git reset --hard origin/main
             git clean -fd
 
-            # Update dependencies safely
+            echo "📦 Installing dependencies..."
             source env/bin/activate
             pip install -r requirements.txt
 
-            # Restart ONLY via systemd (no manual processes)
-            sudo systemctl daemon-reload
+            echo "♻ Restarting service..."
             sudo systemctl restart streamlit
 
-            # Confirm service is alive
-            sudo systemctl is-active streamlit
-
-            echo "✅ Deployment successful"
+            echo "✅ Deployment complete"
