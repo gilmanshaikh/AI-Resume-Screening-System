@@ -17,7 +17,7 @@ def _rerun():
 
 def render_footer():
     st.markdown(
-        "<p class='footer'>🚀 DevOps AI Resume Screening System · Built by <strong>GILMAN SHAIKH</strong></p>",
+        "<p class='footer'>🚀 DevOps AI-Resume-ScreeningSystem · Built by <strong>GILMAN SHAIKH</strong></p>",
         unsafe_allow_html=True,
     )
 
@@ -48,13 +48,13 @@ def render_stat_cards(stats):
 
 # Page config - must be first Streamlit command
 st.set_page_config(
-    page_title="AI Resume Screening System V3 (DevOps Project...)  | Gilman Shaikh",
+    page_title="AI Resume Screening System V3.3 (DevOps Project...)  | Gilman Shaikh",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-APP_NAME = "🤖 AI Resume Screening System V3 (DevOps Project...)  v3"
+APP_NAME = "🤖 AI Resume Screening System V3.3 (DevOps Project...)  v3.3"
 APP_TAGLINE = "⚙️ CI/CD-powered AI resume screening & candidate matching"
 
 # ----- Custom CSS: futuristic professional design system -----
